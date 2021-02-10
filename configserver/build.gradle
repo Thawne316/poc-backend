@@ -1,0 +1,53 @@
+plugins {
+	id 'org.springframework.boot' version '2.4.2'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'groovy'
+}
+
+group = 'com.demo'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	set('springCloudVersion', "2020.0.1")
+}
+
+dependencies {
+	implementation 'org.codehaus.groovy:groovy'
+	implementation 'org.springframework.cloud:spring-cloud-config-server'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+test {
+	useJUnitPlatform()
+}
+
+task createAll(type : Jar){
+    from 'src'
+	baseName = 'customName'
+	appendix = 'wrapper'
+	version = "2.0.1"
+	classifier = 'SNAPSHOT'
+	archiveName = "${baseName}_${appendix}_${version}_${classifier}.jar"
+	extension  = "ext"
+	destinationDir = new File("${buildDir}/test/a")
+
+	manifest {
+		attributes = [
+				'Main-Class' : "com.ekiras.A",
+				'Version'    : 2.0
+		 ]
+	}
+}
+
+}
